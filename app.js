@@ -24,10 +24,7 @@ app.get('/login',  (req, res) => {
               res.send(`Scan QR code for Client ${clientId}`+`<br><img src='${url}'>`);
             }
           });
-        
-    });
-    
-    client.on('ready', () => {
+        client.on('ready', () => {
         console.log('Client is ready!');
     });
 
@@ -37,11 +34,16 @@ app.get('/login',  (req, res) => {
     
     client.on('authenticated', () => {
         console.log(`Client ${clientId} authenticated`);
+        clients.push({ clientId, client });
     });
 
     client.initialize();
+        
+    });
+    
+    
 
-    clients.push({ clientId, client });
+    
 
     
 
