@@ -1,26 +1,51 @@
 const express = require('express');
-const axios = require('axios');
+const qrcode = require('qrcode');
 
 const app = express();
-const PORT = 3000; // Change this to the desired port number
+const PORT = 3000;
+const clients = [];
 
 app.use(express.json());
 
-app.get('/capture-data', async (req, res) => {
-  try {
-    // Simulate captured data from the GET request query parameters
-    const capturedData = req.query.key;
-    console.log(capturedData);
-    // Make an HTTP request to another URL using the captured data
-    const response = await axios.get(`http://localhost/api/fetch.php/?${capturedData}`);
+app.get('/login',  (req, res) => {
+    const clientId = req.query.key;
+    const client = new Client({
+        authStrategy: new LocalAuth({ clientId })
+    });
 
-    res.status(200).json(response.data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred' });
-  }
-});
 
+    client.on('qr', (qr) => {
+
+        qrcode.toDataURL(qr, (err, url) => {
+            if (err) {
+              console.error('Error generating QR code:', err);
+            } else {
+              res.send(`Scan QR code for Client ${clientId}`+`<br><img src='${url}'>`);
+            }
+          });
+        
+    });
+    
+    client.on('ready', () => {
+        console.log('Client is ready!');
+    });
+
+
+
+
+    
+    client.on('authenticated', () => {
+        console.log(`Client ${clientId} authenticated`);
+    });
+
+    client.initialize();
+
+    clients.push({ clientId, client });
+
+    
+
+
+})
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
