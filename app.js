@@ -48,8 +48,9 @@ app.get('/login',  (req, res) => {
             const messageText = 'Welcome to my API';
             user.sendMessage(recipientPhoneNumber, messageText);
         }
+        */
     });
-*/
+
     client.initialize();
         
     });
