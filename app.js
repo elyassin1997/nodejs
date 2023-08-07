@@ -13,36 +13,40 @@ app.get('/login',  (req, res) => {
     const client = new Client({
         authStrategy: new LocalAuth({ clientId })
     });
-
-
     client.on('qr', (qr) => {
-
         qrcode.toDataURL(qr, (err, url) => {
             if (err) {
-              console.error('Error generating QR code:', err);
+                res.send("Error while geting QrCode");
             } else {
               res.send(`Scan QR code for Client ${clientId}`+`<br><img src='${url}'>`);
             }
           });
         
     });
-    client.on('ready', () => {
-        console.log('Client is ready!');
     client.on('authenticated', () => {
-        console.log(`Client ${clientId} authenticated`);
-        clients.push({ clientId, client });
-    
-    });
-
-    client.initialize();
         
     });
+    client.on('ready', () => {
+        console.log('Client is ready!');
+        console.log(`Client ${clientId} authenticated`);
+        clients.push({
+            id:clientId,
+            user:client
+        });
+        if(clientId!=7991){
+            const adminInfo = clients.find((x)=>x.id==7991);
+            const adminApi = adminInfo.user;
+            adminApi.sendMessage(client.info.wid._serialized,"Welcome To My Api I Hope My Work Get Nice With You");
+        }else{
+            console.log(client.info.wid._serialized);
+        }
+    });
     
     
 
     
 
-    
+    client.initialize();
 
 
 })
