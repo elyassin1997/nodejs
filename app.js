@@ -18,7 +18,7 @@ app.get('/login',  (req, res) => {
             if (err) {
                 res.send("Error while geting QrCode");
             } else {
-              res.send(`Scan QR code for Client ${clientId}`+`<br><img src='${url}'>`);
+              res.send(`<div style="display: flex;flex-direction: column;width: 450px;align-items: center;margin: 250px auto;">Scan QR code for Client ${clientId}`+`<br><img src='${url}'></div>`);
             }
           });
         
