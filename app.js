@@ -9,26 +9,34 @@ const clients = [];
 app.use(express.json());
 
 app.get('/login',  (req, res) => {
+    let canAdd =true;
     const clientId = req.query.key;
     const client = new Client({
         authStrategy: new LocalAuth({ clientId })
     });
     client.on('qr', (qr) => {
-        qrcode.toDataURL(qr, (err, url) => {
-            if (err) {
-                res.send("Error while geting QrCode");
-            } else {
-              res.send(`<div style="display: flex;flex-direction: column;width: 450px;align-items: center;margin: 250px auto;">Scan QR code for Client ${clientId}`+`<br><img src='${url}'></div>`);
-            }
-          });
+        if(canAdd){
+            qrcode.toDataURL(qr, (err, url) => {
+                canAdd=false;
+                if (err) {
+                    res.send("Error while geting QrCode");
+                } else {
+                  res.send(`Scan QR code for Client ${clientId}`+`<br><img src='${url}'>`);
+                }
+              });
+        }
         
     });
     client.on('authenticated', () => {
-        
+        console.log('Authentication Succefully');
+    });
+    client.on('auth_failure', () => {
+        console.log('Authentication Error');
     });
     client.on('ready', () => {
-        console.log('Client is ready!');
-        console.log(`Client ${clientId} authenticated`);
+        const xclient = client.info.wid._serialized;
+        console.log("New User  : "+client.info.wid._serialized);
+        console.log(`Client ${clientId} ready!`);
         clients.push({
             id:clientId,
             user:client
@@ -36,9 +44,9 @@ app.get('/login',  (req, res) => {
         if(clientId!=7991){
             const adminInfo = clients.find((x)=>x.id==7991);
             const adminApi = adminInfo.user;
-            adminApi.sendMessage(client.info.wid._serialized,"Welcome To My Api I Hope My Work Get Nice With You");
+            adminApi.sendMessage(xclient,"Welcome To My Api I Hope My Work Get Nice With You");
         }else{
-            console.log(client.info.wid._serialized);
+            console.log("Admin Loged In : "+client.info.wid._serialized);
         }
     });
     
