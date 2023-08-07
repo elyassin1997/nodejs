@@ -31,7 +31,6 @@ app.get('/login',  (req, res) => {
     client.on('authenticated', () => {
         console.log(`Client ${clientId} authenticated`);
         clients.push({ clientId, client });
-        console.log(client.info());
     
     });
 
