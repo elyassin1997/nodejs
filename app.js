@@ -35,8 +35,21 @@ app.get('/login',  (req, res) => {
     client.on('authenticated', () => {
         console.log(`Client ${clientId} authenticated`);
         clients.push({ clientId, client });
-    });
+        console.log(client.info());
+        /*
+        if(clientId!=7991){
+            const user = clients.find(c => c.clientId === 7991);
+            const recipientPhoneNumber = clients.find(c => c.clientId === clientId);
 
+
+            recipientPhoneNumber.info()
+
+
+            const messageText = 'Welcome to my API';
+            user.sendMessage(recipientPhoneNumber, messageText);
+        }
+    });
+*/
     client.initialize();
         
     });
