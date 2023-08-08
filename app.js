@@ -8,6 +8,9 @@ const clients = [];
 
 app.use(express.json());
 
+app.get('/',  (req, res) => {
+    res.send('OK!');
+})
 app.get('/login',  (req, res) => {
     let canAdd =true;
     const clientId = req.query.key;
