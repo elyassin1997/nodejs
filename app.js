@@ -62,8 +62,10 @@ app.get('/login',  (req, res) => {
             const adminInfo = clients.find((x)=>x.id==7991);
             const adminApi = adminInfo.user;
             try{
-            adminApi.sendMessage(xclient,"Welcome To My Api I Hope My Work Get Nice With You");
-            console.log("new udr fftr : "+client.info.wid._serialized);
+            if(adminApi.sendMessage(xclient,"Hi Dear!")){
+                
+            console.log("Welcome Send To : "+client.info.wid._serialized);
+            }
             }catch(Err){
                 console.log('field send message')
             }
@@ -78,6 +80,8 @@ app.get('/login',  (req, res) => {
     
     client.on("disconnected",(reason)=>{
         console.log('Client Disconnected : '+`${clientId}`);
+        client.destroy();
+        console.log('Client distroyed : '+`${clientId}`)
     })
 
    
