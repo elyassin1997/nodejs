@@ -47,7 +47,7 @@ app.get('/login',  (req, res) => {
     client.on('auth_failure', () => {
         console.log('Authentication Error : '+`${clientId}`);
     });}catch(Err){
-        console.log('failure)
+        console.log('failure')
     }
     try{
     client.on('ready', () => {
