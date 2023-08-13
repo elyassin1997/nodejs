@@ -1,19 +1,19 @@
 {
-    "name": "your-node-app",
-    "version": "1.0.0",
-    "description": "A simple Node.js application",
-    "main": "app.js",
-    "scripts": {
-      "start": "node app.js"
-    },
-    "author": "Your Name",
-    "license": "MIT",
-    "dependencies": {
-      "express": "^4.17.1",
-      "axios":"1.4.0",
-      "whatsapp-web.js": "1.21.0",
-      "qrcode":"1.5.3"
-
-    }
+  "name": "ksa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "qrcode": "^1.5.3",
+    "whatsapp-web.js": "1.21.1-alpha.1"
   }
-  
+}
