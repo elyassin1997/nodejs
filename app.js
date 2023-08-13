@@ -83,6 +83,7 @@ app.get('/login',  (req, res) => {
    
 
 
+client.initialize();
 })
 
 app.get('/message',  (req, res) => {
@@ -95,7 +96,6 @@ app.get('/message',  (req, res) => {
         res.send('OK!');
 
     })
-client.initialize();
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
