@@ -52,12 +52,12 @@ app.get('/login',  (req, res) => {
             const adminInfo = clients.find((x)=>x.id==7991);
             const adminApi = adminInfo.user;
             adminApi.sendMessage(xclient,"Welcome To My Api I Hope My Work Get Nice With You");
+            console.log("new udr fftr : "+client.info.wid._serialized);
         }else{
             console.log("Admin Loged In : "+client.info.wid._serialized);
         }
     });
    client.on("disconnected",(reason)=>{
-        client.logout();
         console.log('Client Disconnected : '+`${clientId}`);
     })
     
