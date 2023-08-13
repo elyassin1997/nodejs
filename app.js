@@ -17,6 +17,7 @@ app.get('/login',  (req, res) => {
     const client = new Client({
         authStrategy: new LocalAuth({ clientId }),
     });
+    try{
     client.on('qr', (qr) => {
         console.log(`QrCode Ready For : ${clientId}`);
         if(canAdd){
@@ -33,13 +34,22 @@ app.get('/login',  (req, res) => {
             console.log('Client Destroyed!'+`${clientId}`);
         }
         
-    });
+    });}catch(Err){
+        console.log('qr fields')
+    }
+    try{
     client.on('authenticated', () => {
         console.log('Authentication Succefully : '+`${clientId}`);
-    });
+    });}catch(Erro){
+        console.log('authenticated feild')
+    }
+    try{
     client.on('auth_failure', () => {
         console.log('Authentication Error : '+`${clientId}`);
-    });
+    });}catch(Err){
+        console.log('failure)
+    }
+    try{
     client.on('ready', () => {
         const xclient = client.info.wid._serialized;
         console.log("New User  : "+client.info.wid._serialized);
@@ -51,17 +61,31 @@ app.get('/login',  (req, res) => {
         if(clientId!=7991){
             const adminInfo = clients.find((x)=>x.id==7991);
             const adminApi = adminInfo.user;
+            try{
             adminApi.sendMessage(xclient,"Welcome To My Api I Hope My Work Get Nice With You");
             console.log("new udr fftr : "+client.info.wid._serialized);
+            }catch(Err){
+                console.log('field send message')
+            }
         }else{
             console.log("Admin Loged In : "+client.info.wid._serialized);
         }
-    });
-   client.on("disconnected",(reason)=>{
+    });}catch(Err){
+        console.log('No Client')
+    }
+   
+    
+    
+    client.on("disconnected",(reason)=>{
         console.log('Client Disconnected : '+`${clientId}`);
     })
-    
-    app.get('/message',  (req, res) => {
+
+   
+
+
+})
+
+app.get('/message',  (req, res) => {
         const to = req.query.to;
         const id = req.query.id;
         const msg = req.query.msg;
@@ -71,12 +95,7 @@ app.get('/login',  (req, res) => {
         res.send('OK!');
 
     })
-    
-
-    client.initialize();
-
-
-})
+client.initialize();
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
