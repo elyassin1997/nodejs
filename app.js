@@ -15,7 +15,6 @@ app.get('/login',  (req, res) => {
     let canAdd =true;
     const clientId = req.query.key;
     const client = new Client({
-        authStrategy: new LocalAuth({ clientId }),
     });
     try{
     client.on('qr', (qr) => {
