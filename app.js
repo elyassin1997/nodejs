@@ -1,118 +1,61 @@
 const express = require('express');
 const qrcode = require('qrcode');
-const { Client} = require('whatsapp-web.js');
+const { Client } = require('whatsapp-web.js');
 
 const app = express();
-const PORT = 3000;
-const clients = [];
+const port = 3000;
+let clients = [];
 
-app.use(express.json());
-
-app.get('/',  (req, res) => {
-    res.send('OK!');
-})
-app.get('/chats',  (req, res) => {
-    let  allChats = null
-        clients[0].user.getChats().then((data)=>{allChats=data}).catch((err)=>{console.log('catx')})
-    res.send(JSON.stringify(allChats));
-})
-app.get('/login',  (req, res) => {
-    let canAdd =true;
-    const clientId = req.query.key;
-    const client = new Client({
-    });
-    try{
-    client.on('qr', (qr) => {
-        console.log(`QrCode Ready For : ${clientId}`);
-        if(canAdd){
-            qrcode.toDataURL(qr, (err, url) => {
-                canAdd=false;
-                if (err) {
-                    res.send("Error while geting QrCode");
-                } else {
-                  res.send(`Scan QR code for Client ${clientId}`+`<br><img src='${url}'>`);
-                }
-              });
-        }else{
-            client.destroy();
-            console.log('Client Destroyed!'+`${clientId}`);
-        }
-        
-    });}catch(Err){
-        console.log('qr fields')
-    }
-    try{
-    client.on('authenticated', () => {
-        console.log('Authentication Succefully : '+`${clientId}`);
-    });}catch(Erro){
-        console.log('authenticated feild')
-    }
-    try{
-    client.on('auth_failure', () => {
-        console.log('Authentication Error : '+`${clientId}`);
-    });}catch(Err){
-        console.log('failure')
-    }
-    try{
-    client.on('ready', () => {
-        const xclient = client.info.wid._serialized;
-        console.log("New User  : "+client.info.wid._serialized);
-        console.log(`Client ${clientId} ready!`);
-        clients.push({
-            id:clientId,
-            user:client
+app.get('/qr', (req, res) => {
+  const client = new Client();
+  client.initialize();
+  let canQr = true;
+  client.on('qr', (qr) => {
+    if(canQr){
+        canQr=false;
+        console.log('Qr ready');
+        qrcode.toDataURL(qr,(error,url)=>{
+            res.send(`<img src="${url}" style="margin:150px auto;">`);
         });
-        if(clientId!=7991){
-            const adminInfo = clients.find((x)=>x.id==7991);
-            const adminApi = adminInfo.user;
-            try{
-            if(adminApi.sendMessage(xclient,"Hi Dear!")){
-                
-            console.log("Welcome Send To : "+client.info.wid._serialized);
-            }
-            }catch(Err){
-                console.log('field send message')
-            }
-        }else{
-            console.log("Admin Loged In : "+client.info.wid._serialized);
-        }
-    });}catch(Err){
-        console.log('No Client')
+        
+    }else{
+        client.destroy().then(()=>{
+            console.log('Client Distroyed');
+        }).catch((reason)=>{
+            console.log('Error');
+        });
     }
-   
+  });
+  client.on('ready', () => {
+    clients.push(client);
+    console.log('WhatsApp Web client is ready');
     
-    
-    client.on('disconnected', (reason) => {
-    console.log(`Client was disconnected: ${reason}`);
-    
-    // Clear the session data
-    client.logout()
-        .then(() => {
-            console.log('Session data cleared');
-        })
-        .catch((error) => {
-            console.error('Error clearing session data:', error);
-            });
-    });
+  });
+  /*client.on('disconnected', (reason) => {
+    console.log('WhatsApp Web client is disconnected!');
+  });*/
+  client.on('disconnected', (reason) => {
+    console.log('WhatsApp Web client is disconnected!');
+  });
+  
+});
 
 
-   
 
+app.get('/msg', (req, res) => { 
 
-client.initialize();
+clients[0].getChatById("212610740846@c.us").then((chat)=>{
+  chat.sendMessage("MSG").then((msg)=>{
+    console.log(msg)
+}).catch((err)=>{
+    console.log('This Is The Error : '+err);
 })
-
-app.get('/message',  (req, res) => {
-        const to = req.query.to;
-        const id = req.query.id;
-        const msg = req.query.msg;
-        const fromInfo = clients.find((x)=>x.id==id);
-        const from = fromInfo.user;
-        const chat = from.getChatById(to+"@c.us")
-        chat.sendMessage(msg);
-        res.send('OK!');
-
-    })
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+}).catch((tre)=>{
+  console.log('fuck new tre :'+tre);
+})
+    
+    res.send("Ok!");
+});
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
