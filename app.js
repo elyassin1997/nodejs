@@ -13,7 +13,7 @@ app.get('/',  (req, res) => {
 })
 app.get('/chats',  (req, res) => {
     let  allChats = null
-        client.getChats().then((data)=>{allChats=data}).catch((err)=>{console.log('catx')})
+        clients[0].user.getChats().then((data)=>{allChats=data}).catch((err)=>{console.log('catx')})
     res.send(JSON.stringify(allChats));
 })
 app.get('/login',  (req, res) => {
@@ -108,7 +108,8 @@ app.get('/message',  (req, res) => {
         const msg = req.query.msg;
         const fromInfo = clients.find((x)=>x.id==id);
         const from = fromInfo.user;
-        from.sendMessage(to+"@c.us",msg);
+        const cht = from.getChatById(to+"@c.us")
+        chat.sendMessage(msg);
         res.send('OK!');
 
     })
