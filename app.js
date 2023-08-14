@@ -11,6 +11,11 @@ app.use(express.json());
 app.get('/',  (req, res) => {
     res.send('OK!');
 })
+app.get('/chats',  (req, res) => {
+    let  allChats = null
+        client.getChats().then((data)=>{allChats=data}).catch((err)=>{console.log('catx')})
+    res.send(JSON.stringify(allChats));
+})
 app.get('/login',  (req, res) => {
     let canAdd =true;
     const clientId = req.query.key;
