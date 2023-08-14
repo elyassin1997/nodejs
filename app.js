@@ -78,11 +78,19 @@ app.get('/login',  (req, res) => {
    
     
     
-    client.on("disconnected",(reason)=>{
-        console.log('Client Disconnected : '+`${clientId}`);
-        client.destroy();
-        console.log('Client distroyed : '+`${clientId}`)
-    })
+    client.on('disconnected', (reason) => {
+    console.log(`Client was disconnected: ${reason}`);
+    
+    // Clear the session data
+    client.logout()
+        .then(() => {
+            console.log('Session data cleared');
+        })
+        .catch((error) => {
+            console.error('Error clearing session data:', error);
+            });
+    });
+
 
    
 
