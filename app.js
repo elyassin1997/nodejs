@@ -108,7 +108,7 @@ app.get('/message',  (req, res) => {
         const msg = req.query.msg;
         const fromInfo = clients.find((x)=>x.id==id);
         const from = fromInfo.user;
-        const cht = from.getChatById(to+"@c.us")
+        const chat = from.getChatById(to+"@c.us")
         chat.sendMessage(msg);
         res.send('OK!');
 
