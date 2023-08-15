@@ -2,12 +2,31 @@ const express = require('express');
 const qrcode = require('qrcode');
 const { Client } = require('whatsapp-web.js');
 
+class nClient extends Client {
+    constructor(options) {
+      super(options);
+    }
+  
+    async sendToNumber(number, message) {
+  
+      const url = `https://web.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
+  
+      await page.goto(url);
+      
+      // Wait for the "Send" button to appear and click it
+      await page.waitForSelector('button[aria-label="Send"]');
+      await page.click('button[aria-label="Send"]');
+    }
+  }
+  
+  
+
 const app = express();
 const port = 3000;
 let clients = [];
 
 app.get('/qr', (req, res) => {
-  const client = new Client();
+  const client = new nClient();
   client.initialize();
   let canQr = true;
   client.on('qr', (qr) => {
@@ -44,18 +63,11 @@ app.get('/qr', (req, res) => {
 
 app.get('/msg', (req, res) => { 
 
-clients[0].getChatById("212610740846@c.us").then((chat)=>{
-  chat.sendMessage("MSG").then((msg)=>{
-    console.log(msg)
-}).catch((err)=>{
-    console.log('This Is The Error : '+err);
-})
-}).catch((tre)=>{
-  console.log('fuck new tre :'+tre);
-})
+clients[0].sendToNumber(req.query.to,req.query.msg);
     
     res.send("Ok!");
 });
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
