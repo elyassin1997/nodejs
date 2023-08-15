@@ -7,15 +7,15 @@ class nClient extends Client {
       super(options);
     }
   
-    async sendToNumber(number, message) {
+   async sendToNumber(number, message) {
   
       const url = `https://web.whatsapp.com/send/?phone=${number}&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
   
-      await page.goto(url);
+      await this.page.goto(url);
       
       // Wait for the "Send" button to appear and click it
-      await page.waitForSelector('button[aria-label="Send"]');
-      await page.click('button[aria-label="Send"]');
+      await this.page.waitForSelector('button[aria-label="Send"]');
+      await this.page.click('button[aria-label="Send"]');
     }
   }
   
